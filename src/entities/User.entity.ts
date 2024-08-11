@@ -16,13 +16,13 @@ export class User {
   user_id: number;
 
   @Column()
+  name: string;
+
+  @Column()
   email: string;
 
   @Column()
   password: string;
-
-  @Column()
-  name: string;
 
   @Column()
   phone_number: string;
