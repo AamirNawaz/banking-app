@@ -18,11 +18,14 @@ export class RoleService {
   }
 
   async findAll(): Promise<Role[]> {
-    return this.roleRepository.find();
+    return await this.roleRepository.find({ relations: ['users'] });
   }
 
   async findOne(id: number): Promise<Role> {
-    const role = await this.roleRepository.findOneBy({ role_id: id });
+    const role = await this.roleRepository.findOne({
+      where: { role_id: id },
+      relations: ['users'],
+    });
     if (!role) {
       throw new NotFoundException(`Role with ID ${id} not found`);
     }
@@ -30,13 +33,11 @@ export class RoleService {
   }
 
   async update(id: number, updateRoleDto: UpdateRoleDto): Promise<Role> {
-    const role = await this.findOne(id);
-    Object.assign(role, updateRoleDto);
-    return this.roleRepository.save(role);
+    await this.roleRepository.update(id, updateRoleDto);
+    return this.findOne(id);
   }
 
   async remove(id: number): Promise<void> {
-    const role = await this.findOne(id);
-    await this.roleRepository.remove(role);
+    await this.roleRepository.delete(id);
   }
 }

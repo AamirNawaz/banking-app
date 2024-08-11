@@ -1,4 +1,46 @@
-import { Controller } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Put,
+  Delete,
+} from '@nestjs/common';
+import { ReviewService } from './review.service';
+import { CreateReviewDto } from './dto/create-review.dto';
+import { UpdateReviewDto } from './dto/update-review.dto';
+import { Review } from './review.entity';
 
-@Controller('review')
-export class ReviewController {}
+@Controller('reviews')
+export class ReviewController {
+  constructor(private readonly reviewService: ReviewService) {}
+
+  @Post()
+  create(@Body() createReviewDto: CreateReviewDto): Promise<Review> {
+    return this.reviewService.create(createReviewDto);
+  }
+
+  @Get()
+  findAll(): Promise<Review[]> {
+    return this.reviewService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: number): Promise<Review> {
+    return this.reviewService.findOne(id);
+  }
+
+  @Put(':id')
+  update(
+    @Param('id') id: number,
+    @Body() updateReviewDto: UpdateReviewDto,
+  ): Promise<Review> {
+    return this.reviewService.update(id, updateReviewDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: number): Promise<void> {
+    return this.reviewService.remove(id);
+  }
+}

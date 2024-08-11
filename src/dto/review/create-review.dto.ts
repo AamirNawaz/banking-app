@@ -1,0 +1,7 @@
+export class CreateReviewDto {
+  readonly booking: number;
+  readonly rating: number;
+  readonly review: string;
+  readonly created_at: Date;
+  readonly updated_at: Date;
+}
