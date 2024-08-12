@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { AppNotification } from '../../entities/AppNotification.entity';
 import { CreateNotificationDto } from '../../dto/notification/create-notification.dto';
 import { UpdateNotificationDto } from '../../dto/notification/update-notification.dto';
-import { User } from 'src/entities/User.entity';
+import { User } from '../../entities/User.entity';
 
 @Injectable()
 export class AppNotificationService {
@@ -39,10 +39,16 @@ export class AppNotificationService {
   }
 
   async findOne(id: number): Promise<AppNotification> {
-    return this.notificationRepository.findOne({
+    const notification = await this.notificationRepository.findOne({
       where: { notification_id: id },
       relations: ['user'],
     });
+
+    if (!notification) {
+      throw new NotFoundException('Notification not found');
+    }
+
+    return notification;
   }
 
   async update(
@@ -83,6 +89,9 @@ export class AppNotificationService {
   }
 
   async remove(id: number): Promise<void> {
-    await this.notificationRepository.delete(id);
+    const result = await this.notificationRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException('Notification not found');
+    }
   }
 }
