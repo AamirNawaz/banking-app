@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { User } from './User.entity';
+import { Payment } from './Payment.entity';
 
 @Entity()
 export class QRCode {
@@ -8,6 +9,9 @@ export class QRCode {
 
   @ManyToOne(() => User, (user) => user.qrCodes)
   user: User;
+
+  @ManyToOne(() => Payment, (payment) => payment.qrCodes, { nullable: true })
+  payment?: Payment;
 
   @Column()
   qr_code_data: string;
