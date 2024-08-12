@@ -1,0 +1,626 @@
+{
+	"info": {
+		"_postman_id": "3d5639ae-c221-4aed-992c-2e6b4d8a82f0",
+		"name": "Nest-Banking-app",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32075405"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"aamir@gmail.com\",\r\n  \"password\": \"aamir\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:6000/users/login",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiYWFtaXJAZ21haWwuY29tIiwicm9sZSI6Im1lcmNoYW50IiwiaWF0IjoxNzIzNDU5MDY2LCJleHAiOjE3MjM0NTkxMjZ9.e6XBCfPByiLF7HmyNR9dtfYINf2HfsVDpEFNZgfO6CE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:6000/users",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Aamir\",\r\n  \"email\": \"aamirkhan@gmail.com\",\r\n  \"password\": \"aamirkhan\",\r\n  \"phone_number\": \"1234567890\",\r\n  \"profile_picture\": \"http://example.com/profile.jpg\",\r\n  \"role\": {\r\n    \"role_id\": 1\r\n\r\n  },\r\n  \"address\": \"Islamabad,Pakistan\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:6000/users",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "role",
+			"item": [
+				{
+					"name": "add",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n//   \"name\": \"admin\"\r\n\"name\": \"customer\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:6000/role",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-by-id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:6000/role/1",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"role",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:6000/role",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:6000/role/100",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"role",
+								"100"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "booking",
+			"item": [
+				{
+					"name": "add",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"user\": 2,  // ID of the associated User\r\n  \"service\": \"Room Booking\",\r\n  \"status\": \"confirmed\",\r\n  \"reviews\": [\r\n    {\r\n      \"review_id\": 1,  // ID of an existing review\r\n      \"rating\": 5,\r\n      \"review\": \"Excellent service!\",\r\n      \"created_at\": \"2024-08-12T19:00:00Z\",\r\n      \"updated_at\": \"2024-08-12T19:00:00Z\"\r\n    }\r\n  ],\r\n  \"payments\": [\r\n    {\r\n      \"payment_id\": 1,  // ID of an existing payment\r\n      \"amount\": 100.50,\r\n      \"currency\": \"USD\",\r\n      \"payment_date\": \"2024-08-12T18:00:00Z\",\r\n      \"status\": \"completed\"\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:6000/bookings",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"bookings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-by-id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:6000/bookings/1",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"bookings",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:6000/bookings",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"bookings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:6000/bookings/100",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"bookings",
+								"100"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "payment",
+			"item": [
+				{
+					"name": "add",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"amount\": 100.50,\r\n  \"currency\": \"USD\",\r\n  \"payment_date\": \"2024-08-12T16:00:00Z\",\r\n  \"status\": \"completed\",\r\n  \"created_at\": \"2024-08-12T16:00:00Z\",\r\n  \"updated_at\": \"2024-08-12T16:00:00Z\",\r\n  \"user\": {\r\n    \"user_id\": 1\r\n  },\r\n  \"booking\": {\r\n    \"booking_id\": 1\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:6000/payments",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"payments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-by-id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:6000/payments/1",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"payments",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:6000/payments",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"payments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:6000/payments/100",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"payments",
+								"100"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "notifications",
+			"item": [
+				{
+					"name": "add",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"New Message\",\r\n  \"message\": \"You have received a new message.\",\r\n  \"type\": \"info\",\r\n  \"created_at\": \"2024-08-12T15:00:00Z\",\r\n  \"updated_at\": \"2024-08-12T15:00:00Z\",\r\n  \"user\": {\r\n    \"user_id\": 1\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:6000/notifications",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"notifications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-by-id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:6000/notifications/1",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"notifications",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:6000/notifications",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"notifications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:6000/notifications/100",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"notifications",
+								"100"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "qrcodes",
+			"item": [
+				{
+					"name": "add",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"code\": \"sampleQRCode\",\r\n  \"description\": \"This is a sample QR Code\",\r\n  \"created_at\": \"2024-08-12T12:00:00Z\",\r\n  \"updated_at\": \"2024-08-12T12:00:00Z\",\r\n  \"user\": {\r\n    \"user_id\": 1\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:6000/qrcodes",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"qrcodes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-by-id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:6000/qrcodes/1",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"qrcodes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:6000/qrcodes",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"qrcodes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:6000/qrcodes/100",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"qrcodes",
+								"100"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "reviews",
+			"item": [
+				{
+					"name": "add",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"booking\": {\r\n    \"booking_id\": 1\r\n  },\r\n  \"rating\": 5,\r\n  \"review\": \"This was an excellent service!\",\r\n  \"created_at\": \"2024-08-12T10:30:00Z\",\r\n  \"updated_at\": \"2024-08-12T10:30:00Z\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:6000/reviews",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-by-id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:6000/reviews/1",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"reviews",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:6000/reviews",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:6000/reviews/100",
+							"host": [
+								"localhost"
+							],
+							"port": "6000",
+							"path": [
+								"reviews",
+								"100"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

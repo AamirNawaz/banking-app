@@ -1,6 +1,5 @@
 import {
   IsNotEmpty,
-  IsNumber,
   IsString,
   IsOptional,
   IsDate,
@@ -9,7 +8,6 @@ import {
 
 export class CreateBookingDto {
   @IsNotEmpty()
-  @IsNumber()
   readonly user: number;
 
   @IsNotEmpty()

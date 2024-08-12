@@ -27,6 +27,8 @@ export class BookingService {
     const booking = this.bookingRepository.create({
       ...createBookingDto,
       user: user,
+      created_at: new Date(),
+      updated_at: new Date(),
     });
 
     return this.bookingRepository.save(booking);
