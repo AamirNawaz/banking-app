@@ -16,10 +16,10 @@ import { Booking } from 'src/entities/Booking.entity';
 export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
 
-  @Post()
-  create(@Body() createBookingDto: CreateBookingDto): Promise<Booking> {
-    return this.bookingService.create(createBookingDto);
-  }
+  // @Post()
+  // create(@Body() createBookingDto: CreateBookingDto): Promise<Booking> {
+  //   return this.bookingService.create(createBookingDto);
+  // }
 
   @Get()
   findAll(): Promise<Booking[]> {
@@ -31,13 +31,13 @@ export class BookingController {
     return this.bookingService.findOne(id);
   }
 
-  @Put(':id')
-  update(
-    @Param('id') id: number,
-    @Body() updateBookingDto: UpdateBookingDto,
-  ): Promise<Booking> {
-    return this.bookingService.update(id, updateBookingDto);
-  }
+  // @Put(':id')
+  // update(
+  //   @Param('id') id: number,
+  //   @Body() updateBookingDto: UpdateBookingDto,
+  // ): Promise<Booking> {
+  //   return this.bookingService.update(id, updateBookingDto);
+  // }
 
   @Delete(':id')
   remove(@Param('id') id: number): Promise<void> {
