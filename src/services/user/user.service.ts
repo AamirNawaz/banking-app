@@ -20,15 +20,21 @@ export class UserService {
 
   async login(loginUserDto: LoginUserDto): Promise<LoginUserResponseDto> {
     try {
-      const user = await this.userRepository.findOneBy({
-        email: loginUserDto.email as string,
+      const user = await this.userRepository.findOne({
+        where: { email: loginUserDto.email as string },
+        relations: ['role'],
       });
-      if (user?.password !== loginUserDto.password) {
-        throw new UnauthorizedException();
+
+      if (!user || user.password !== loginUserDto.password) {
+        throw new UnauthorizedException('Invalid email or password');
       }
 
       const tokenResponseDtoObj = new LoginUserResponseDto();
-      const payload = { sub: user.user_id, email: user.email };
+      const payload = {
+        sub: user.user_id,
+        email: user.email,
+        role: user.role.name,
+      };
       const accessToken = await this.jwtService.signAsync(payload);
       tokenResponseDtoObj.token = accessToken;
       return tokenResponseDtoObj;

@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { LoginUserDto } from 'src/dto/user/login-user.dto';
 import { User } from 'src/entities/User.entity';
+import { Roles } from 'src/guard/roles.decorator';
 import { UserGuard } from 'src/guard/user.guard';
 import { UserService } from 'src/services/user/user.service';
 
@@ -28,6 +29,7 @@ export class UserController {
   }
 
   @Get()
+  @Roles('admin', 'merchant')
   @UseGuards(UserGuard)
   async findAll(): Promise<User[]> {
     return this.userService.findAll();
@@ -41,6 +43,7 @@ export class UserController {
 
   @Put(':id')
   @UseGuards(UserGuard)
+  @Roles('admin', 'merchant', 'customer')
   async update(
     @Param('id') id: number,
     @Body() user: Partial<User>,
@@ -50,6 +53,7 @@ export class UserController {
 
   @Delete(':id')
   @UseGuards(UserGuard)
+  @Roles('admin', 'merchant', 'customer')
   async remove(@Param('id') id: number): Promise<void> {
     return this.userService.remove(id);
   }
