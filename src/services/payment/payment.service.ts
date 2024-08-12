@@ -1,19 +1,38 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Payment } from './payment.entity';
-import { CreatePaymentDto } from './dto/create-payment.dto';
-import { UpdatePaymentDto } from './dto/update-payment.dto';
+import { Payment } from 'src/entities/payment.entity';
+import { CreatePaymentDto } from 'src/dto/payment/create-payment.dto';
+import { Booking } from 'src/entities/Booking.entity';
 
 @Injectable()
 export class PaymentService {
   constructor(
     @InjectRepository(Payment)
+    @InjectRepository(Payment)
     private readonly paymentRepository: Repository<Payment>,
+    @InjectRepository(Booking)
+    private readonly bookingRepository: Repository<Booking>,
   ) {}
 
   async create(createPaymentDto: CreatePaymentDto): Promise<Payment> {
-    const payment = this.paymentRepository.create(createPaymentDto);
+    const booking = await this.bookingRepository.findOne({
+      where: { booking_id: createPaymentDto.booking },
+    });
+
+    if (!booking) {
+      throw new NotFoundException(
+        `Booking with ID ${createPaymentDto.booking} not found`,
+      );
+    }
+    const payment = new Payment();
+    payment.booking = booking;
+    payment.payment_method = createPaymentDto.payment_method;
+    payment.amount = createPaymentDto.amount;
+    payment.status = createPaymentDto.status;
+    payment.created_at = createPaymentDto.created_at;
+    payment.updated_at = createPaymentDto.updated_at;
+
     return this.paymentRepository.save(payment);
   }
 
@@ -22,13 +41,22 @@ export class PaymentService {
   }
 
   async findOne(id: number): Promise<Payment> {
-    return this.paymentRepository.findOne({
+    const payment = await this.paymentRepository.findOne({
       where: { payment_id: id },
       relations: ['booking'],
     });
+
+    if (!payment) {
+      throw new NotFoundException(`Payment with ID ${id} not found`);
+    }
+
+    return payment;
   }
 
   async remove(id: number): Promise<void> {
-    await this.paymentRepository.delete(id);
+    const result = await this.paymentRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Payment with ID ${id} not found`);
+    }
   }
 }

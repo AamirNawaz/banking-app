@@ -7,10 +7,10 @@ import {
   Put,
   Delete,
 } from '@nestjs/common';
-import { ReviewService } from './review.service';
-import { CreateReviewDto } from './dto/create-review.dto';
-import { UpdateReviewDto } from './dto/update-review.dto';
-import { Review } from './review.entity';
+import { ReviewService } from '../../services/review/review.service';
+import { CreateReviewDto } from '../../dto/review/create-review.dto';
+import { UpdateReviewDto } from '../../dto/review/update-review.dto';
+import { Review } from '../../entities/Review.entity';
 
 @Controller('reviews')
 export class ReviewController {

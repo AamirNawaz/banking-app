@@ -3,6 +3,7 @@ import { RoleService } from './role.service';
 import { Role } from '../../entities/Role.entity';
 import { DeleteResult, Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { NotFoundException } from '@nestjs/common';
 
 describe('RoleService', () => {
   let service: RoleService;
@@ -55,7 +56,6 @@ describe('RoleService', () => {
       expect(repository.find).toHaveBeenCalled();
     });
   });
-
   describe('findOne', () => {
     it('should return a role by id', async () => {
       const roleId = 1;
@@ -69,22 +69,26 @@ describe('RoleService', () => {
       expect(result).toEqual(role);
       expect(repository.findOne).toHaveBeenCalledWith({
         where: { role_id: roleId },
-      });
-    });
-
-    it('should return undefined if role is not found', async () => {
-      const roleId = 1;
-
-      jest.spyOn(repository, 'findOne').mockResolvedValue(undefined);
-
-      const result = await service.findOne(roleId);
-      expect(result).toBeUndefined();
-      expect(repository.findOne).toHaveBeenCalledWith({
-        where: { role_id: roleId },
+        relations: ['users'],
       });
     });
   });
 
+  describe('RoleNotFound', () => {
+    it('should throw NotFoundException if role is not found', async () => {
+      const roleId = 1;
+
+      jest.spyOn(repository, 'findOne').mockResolvedValue(undefined);
+
+      await expect(service.findOne(roleId)).rejects.toThrow(
+        new NotFoundException(`Role with ID ${roleId} not found`),
+      );
+      expect(repository.findOne).toHaveBeenCalledWith({
+        where: { role_id: roleId },
+        relations: ['users'],
+      });
+    });
+  });
   describe('remove', () => {
     it('should remove a role by id', async () => {
       const roleId = 1;

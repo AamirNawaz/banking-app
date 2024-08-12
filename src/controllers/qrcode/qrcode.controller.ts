@@ -7,10 +7,10 @@ import {
   Put,
   Delete,
 } from '@nestjs/common';
-import { QRCodeService } from './qrcode.service';
-import { CreateQRCodeDto } from './dto/create-qrcode.dto';
-import { UpdateQRCodeDto } from './dto/update-qrcode.dto';
-import { QRCode } from './qrcode.entity';
+import { QRCodeService } from '../../services/qrcode/qrcode.service';
+import { CreateQRCodeDto } from '../../dto/qrcode/create-qrcode.dto';
+import { UpdateQRCodeDto } from '../../dto/qrcode/update-qrcode.dto';
+import { QRCode } from '../../entities/QRCode.entity';
 
 @Controller('qrcodes')
 export class QRCodeController {

@@ -25,7 +25,7 @@ export class BookingService {
 
     const booking = this.bookingRepository.create({
       ...createBookingDto,
-      user: user, // Assign the found user entity
+      user: user,
     });
 
     return this.bookingRepository.save(booking);

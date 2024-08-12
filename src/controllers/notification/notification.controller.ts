@@ -7,10 +7,10 @@ import {
   Put,
   Delete,
 } from '@nestjs/common';
-import { NotificationService } from './notification.service';
-import { CreateNotificationDto } from './dto/create-notification.dto';
-import { UpdateNotificationDto } from './dto/update-notification.dto';
-import { Notification } from './notification.entity';
+import { NotificationService } from '../../services/notification/notification.service';
+import { CreateNotificationDto } from '../../dto/notification/create-notification.dto';
+import { UpdateNotificationDto } from '../../dto/notification/update-notification.dto';
+import { Notification } from '../../entities/Notification.entity';
 
 @Controller('notifications')
 export class NotificationController {

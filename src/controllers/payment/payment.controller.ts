@@ -7,10 +7,9 @@ import {
   Put,
   Delete,
 } from '@nestjs/common';
-import { PaymentService } from './payment.service';
-import { CreatePaymentDto } from './dto/create-payment.dto';
-import { UpdatePaymentDto } from './dto/update-payment.dto';
-import { Payment } from './payment.entity';
+import { PaymentService } from '../../services/payment/payment.service';
+import { CreatePaymentDto } from '../../dto/payment/create-payment.dto';
+import { Payment } from '../../entities/Payment.entity';
 
 @Controller('payments')
 export class PaymentController {

@@ -7,10 +7,10 @@ import {
   Put,
   Delete,
 } from '@nestjs/common';
-import { BookingService } from './booking.service';
-import { CreateBookingDto } from './dto/create-booking.dto';
-import { UpdateBookingDto } from './dto/update-booking.dto';
-import { Booking } from './booking.entity';
+import { BookingService } from 'src/services/booking/booking.service';
+import { CreateBookingDto } from 'src/dto/booking/create-booking.dto';
+import { UpdateBookingDto } from 'src/dto/booking/update-booking.dto';
+import { Booking } from 'src/entities/Booking.entity';
 
 @Controller('bookings')
 export class BookingController {

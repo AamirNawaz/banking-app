@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { QRCode } from 'src/entities/QRCode.entity';
-import { QrcodeService } from 'src/services/qrcode/qrcode.service';
-import { QrcodeController } from './qrcode.controller';
+import { QRCodeService } from '../../services/qrcode/qrcode.service';
+import { QRCodeController } from '../../controllers/qrcode/qrcode.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([QRCode])],
-  providers: [QrcodeService],
-  controllers: [QrcodeController],
+  providers: [QRCodeService],
+  controllers: [QRCodeController],
 })
 export class QrcodeModule {}
