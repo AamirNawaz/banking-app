@@ -1,14 +1,47 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../entities/User.entity';
 import { Repository } from 'typeorm';
+import { LoginUserDto } from 'src/dto/user/login-user.dto';
+import { LoginUserResponseDto } from 'src/dto/user/login-user-response.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly jwtService: JwtService,
   ) {}
+
+  async login(loginUserDto: LoginUserDto): Promise<LoginUserResponseDto> {
+    try {
+      const user = await this.userRepository.findOne({
+        where: { email: loginUserDto.email as string },
+        relations: ['role'],
+      });
+
+      if (!user || user.password !== loginUserDto.password) {
+        throw new UnauthorizedException('Invalid email or password');
+      }
+
+      const tokenResponseDtoObj = new LoginUserResponseDto();
+      const payload = {
+        sub: user.user_id,
+        email: user.email,
+        role: user.role.name,
+      };
+      const accessToken = await this.jwtService.signAsync(payload);
+      tokenResponseDtoObj.token = accessToken;
+      return tokenResponseDtoObj;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
 
   async create(user: Partial<User>): Promise<User> {
     const newUser = this.userRepository.create(user);
@@ -17,14 +50,14 @@ export class UserService {
 
   async findAll(): Promise<User[]> {
     return this.userRepository.find({
-      relations: ['role', 'bookings', 'notifications', 'qrCodes'],
+      relations: ['role', 'bookings', 'appNotification', 'qrCodes'],
     });
   }
 
   async findOne(id: number): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { user_id: id },
-      relations: ['role', 'bookings', 'notifications', 'qrCodes'],
+      relations: ['role', 'bookings', 'appNotification', 'qrCodes'],
     });
 
     if (!user) {
@@ -36,7 +69,7 @@ export class UserService {
   async update(id: number, user: Partial<User>): Promise<User> {
     const foundUser = await this.userRepository.findOne({
       where: { user_id: id },
-      relations: ['role', 'bookings', 'notifications', 'qrCodes'],
+      relations: ['role', 'bookings', 'appNotification', 'qrCodes'],
     });
 
     if (!foundUser) {
@@ -46,7 +79,7 @@ export class UserService {
     await this.userRepository.update(id, user);
     return this.userRepository.findOne({
       where: { user_id: id },
-      relations: ['role', 'bookings', 'notifications', 'qrCodes'],
+      relations: ['role', 'bookings', 'appNotification', 'qrCodes'],
     });
   }
 

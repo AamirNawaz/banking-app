@@ -1,5 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { Booking } from './Booking.entity';
+import { QRCode } from './QRCode.entity';
 
 @Entity()
 export class Payment {
@@ -8,6 +15,9 @@ export class Payment {
 
   @ManyToOne(() => Booking, (booking) => booking.payments)
   booking: Booking;
+
+  @OneToMany(() => QRCode, (qrCode) => qrCode.payment)
+  qrCodes: QRCode[];
 
   @Column()
   payment_method: string;
