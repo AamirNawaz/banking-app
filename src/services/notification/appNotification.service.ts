@@ -1,22 +1,23 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Notification } from '../../entities/notification.entity';
+import { AppNotification } from '../../entities/AppNotification.entity';
 import { CreateNotificationDto } from '../../dto/notification/create-notification.dto';
 import { UpdateNotificationDto } from '../../dto/notification/update-notification.dto';
 import { User } from 'src/entities/User.entity';
 
 @Injectable()
-export class NotificationService {
+export class AppNotificationService {
   constructor(
-    @InjectRepository(Notification)
-    private readonly notificationRepository: Repository<Notification>,
+    @InjectRepository(AppNotification)
+    private readonly notificationRepository: Repository<AppNotification>,
+    @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
 
   async create(
     createNotificationDto: CreateNotificationDto,
-  ): Promise<Notification> {
+  ): Promise<AppNotification> {
     const user = await this.userRepository.findOne({
       where: { user_id: createNotificationDto.user },
     });
@@ -33,11 +34,11 @@ export class NotificationService {
     return this.notificationRepository.save(notification);
   }
 
-  async findAll(): Promise<Notification[]> {
+  async findAll(): Promise<AppNotification[]> {
     return this.notificationRepository.find({ relations: ['user'] });
   }
 
-  async findOne(id: number): Promise<Notification> {
+  async findOne(id: number): Promise<AppNotification> {
     return this.notificationRepository.findOne({
       where: { notification_id: id },
       relations: ['user'],
@@ -47,7 +48,7 @@ export class NotificationService {
   async update(
     id: number,
     updateNotificationDto: UpdateNotificationDto,
-  ): Promise<Notification> {
+  ): Promise<AppNotification> {
     const notificationToUpdate = await this.notificationRepository.findOne({
       where: { notification_id: id },
     });

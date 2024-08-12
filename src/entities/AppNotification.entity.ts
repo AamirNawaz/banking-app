@@ -1,12 +1,12 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { User } from './User.entity';
 
-@Entity()
-export class Notification {
+@Entity({ name: 'app_notifications' })
+export class AppNotification {
   @PrimaryGeneratedColumn()
   notification_id: number;
 
-  @ManyToOne(() => User, (user) => user.notifications)
+  @ManyToOne(() => User, (user) => user.appNotification)
   user: User;
 
   @Column()

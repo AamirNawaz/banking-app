@@ -7,29 +7,29 @@ import {
   Put,
   Delete,
 } from '@nestjs/common';
-import { NotificationService } from '../../services/notification/notification.service';
+import { AppNotificationService } from '../../services/notification/appNotification.service';
 import { CreateNotificationDto } from '../../dto/notification/create-notification.dto';
 import { UpdateNotificationDto } from '../../dto/notification/update-notification.dto';
-import { Notification } from '../../entities/Notification.entity';
+import { AppNotification } from '../../entities/AppNotification.entity';
 
 @Controller('notifications')
-export class NotificationController {
-  constructor(private readonly notificationService: NotificationService) {}
+export class AppNotificationController {
+  constructor(private readonly notificationService: AppNotificationService) {}
 
   @Post()
   create(
     @Body() createNotificationDto: CreateNotificationDto,
-  ): Promise<Notification> {
+  ): Promise<AppNotification> {
     return this.notificationService.create(createNotificationDto);
   }
 
   @Get()
-  findAll(): Promise<Notification[]> {
+  findAll(): Promise<AppNotification[]> {
     return this.notificationService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number): Promise<Notification> {
+  findOne(@Param('id') id: number): Promise<AppNotification> {
     return this.notificationService.findOne(id);
   }
 
@@ -37,7 +37,7 @@ export class NotificationController {
   update(
     @Param('id') id: number,
     @Body() updateNotificationDto: UpdateNotificationDto,
-  ): Promise<Notification> {
+  ): Promise<AppNotification> {
     return this.notificationService.update(id, updateNotificationDto);
   }
 

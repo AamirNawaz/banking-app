@@ -8,7 +8,7 @@ import { UserModule } from './controllers/user/user.module';
 import { ReviewModule } from './controllers/review/review.module';
 import { QrcodeModule } from './controllers/qrcode/qrcode.module';
 import { PaymentModule } from './controllers/payment/payment.module';
-import { NotificationModule } from './controllers/notification/notification.module';
+import { AppNotificationModule } from './controllers/notification/appNotification.module';
 import { BookingModule } from './controllers/booking/booking.module';
 
 @Module({
@@ -19,7 +19,7 @@ import { BookingModule } from './controllers/booking/booking.module';
     ReviewModule,
     QrcodeModule,
     PaymentModule,
-    NotificationModule,
+    AppNotificationModule,
     BookingModule,
   ],
   controllers: [AppController],

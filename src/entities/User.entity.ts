@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { Role } from './Role.entity';
 import { Booking } from './Booking.entity';
-import { Notification } from './Notification.entity';
+import { AppNotification } from './AppNotification.entity';
 import { QRCode } from './QRCode.entity';
 
 @Entity()
@@ -36,8 +36,8 @@ export class User {
   @OneToMany(() => Booking, (booking) => booking.user)
   bookings: Booking[];
 
-  @OneToMany(() => Notification, (notification) => notification.user)
-  notifications: Notification[];
+  @OneToMany(() => AppNotification, (appNotification) => appNotification.user)
+  appNotification: AppNotification[];
 
   @OneToMany(() => QRCode, (qrCode) => qrCode.user)
   qrCodes: QRCode[];
