@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Review } from 'src/entities/review.entity';
+import { Review } from '../../entities/review.entity';
 import { CreateReviewDto } from 'src/dto/review/create-review.dto';
 import { UpdateReviewDto } from 'src/dto/review/update-review.dto';
-import { Booking } from 'src/entities/Booking.entity';
+import { Booking } from '../../entities/Booking.entity';
 
 @Injectable()
 export class ReviewService {
@@ -41,11 +41,18 @@ export class ReviewService {
   }
 
   async findOne(id: number): Promise<Review> {
-    return this.reviewRepository.findOne({
+    const review = await this.reviewRepository.findOne({
       where: { review_id: id },
       relations: ['booking'],
     });
+
+    if (!review) {
+      throw new NotFoundException(`Review with ID ${id} not found`);
+    }
+
+    return review;
   }
+
   async update(id: number, updateReviewDto: UpdateReviewDto): Promise<Review> {
     const review = await this.reviewRepository.findOne({
       where: { review_id: id },
@@ -55,10 +62,12 @@ export class ReviewService {
     if (!review) {
       throw new NotFoundException(`Review with ID ${id} not found`);
     }
+
     if (updateReviewDto.booking) {
       const booking = await this.bookingRepository.findOne({
         where: { booking_id: updateReviewDto.booking },
       });
+
       if (!booking) {
         throw new NotFoundException(
           `Booking with ID ${updateReviewDto.booking} not found`,
@@ -66,6 +75,7 @@ export class ReviewService {
       }
       review.booking = booking;
     }
+
     if (updateReviewDto.rating !== undefined) {
       review.rating = updateReviewDto.rating;
     }
@@ -78,10 +88,14 @@ export class ReviewService {
     if (updateReviewDto.updated_at) {
       review.updated_at = updateReviewDto.updated_at;
     }
+
     return this.reviewRepository.save(review);
   }
 
   async remove(id: number): Promise<void> {
-    await this.reviewRepository.delete(id);
+    const result = await this.reviewRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Review with ID ${id} not found`);
+    }
   }
 }
