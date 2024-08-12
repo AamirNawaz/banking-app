@@ -1,14 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Payment } from 'src/entities/payment.entity';
+import { Payment } from '../../entities/payment.entity';
 import { CreatePaymentDto } from 'src/dto/payment/create-payment.dto';
-import { Booking } from 'src/entities/Booking.entity';
+import { Booking } from '../../entities/Booking.entity';
 
 @Injectable()
 export class PaymentService {
   constructor(
-    @InjectRepository(Payment)
     @InjectRepository(Payment)
     private readonly paymentRepository: Repository<Payment>,
     @InjectRepository(Booking)
