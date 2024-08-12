@@ -31,14 +31,6 @@ export class PaymentController {
     return this.paymentService.findOne(id);
   }
 
-  @Put(':id')
-  update(
-    @Param('id') id: number,
-    @Body() updatePaymentDto: UpdatePaymentDto,
-  ): Promise<Payment> {
-    return this.paymentService.update(id, updatePaymentDto);
-  }
-
   @Delete(':id')
   remove(@Param('id') id: number): Promise<void> {
     return this.paymentService.remove(id);

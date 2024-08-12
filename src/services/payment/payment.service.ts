@@ -28,14 +28,6 @@ export class PaymentService {
     });
   }
 
-  async update(
-    id: number,
-    updatePaymentDto: UpdatePaymentDto,
-  ): Promise<Payment> {
-    await this.paymentRepository.update(id, updatePaymentDto);
-    return this.findOne(id);
-  }
-
   async remove(id: number): Promise<void> {
     await this.paymentRepository.delete(id);
   }
