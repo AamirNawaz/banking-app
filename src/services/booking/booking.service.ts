@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Booking } from '../../entities/booking.entity';
 import { CreateBookingDto } from '../../dto/booking/create-booking.dto';
 import { UpdateBookingDto } from '../../dto/booking/update-booking.dto';
-import { User } from 'src/entities/User.entity';
+import { User } from '../../entities/User.entity';
 
 @Injectable()
 export class BookingService {
