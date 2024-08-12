@@ -1,0 +1,10 @@
+creating migration:
+
+ npm run migration:generate -- src/db/migrations/app_v1
+
+
+Runnign migration:
+
+ npm run migration:run
+
+
