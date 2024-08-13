@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { LoginUserDto } from 'src/dto/user/login-user.dto';
 import { LoginUserResponseDto } from 'src/dto/user/login-user-response.dto';
 import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UserService {
@@ -25,7 +26,10 @@ export class UserService {
         relations: ['role'],
       });
 
-      if (!user || user.password !== loginUserDto.password) {
+      if (
+        !user ||
+        !(await bcrypt.compare(loginUserDto.password, user.password))
+      ) {
         throw new UnauthorizedException('Invalid email or password');
       }
 
@@ -39,11 +43,15 @@ export class UserService {
       tokenResponseDtoObj.token = accessToken;
       return tokenResponseDtoObj;
     } catch (error) {
-      throw new Error(error);
+      throw new Error(error.message);
     }
   }
 
   async create(user: Partial<User>): Promise<User> {
+    if (user.password) {
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(user.password, salt);
+    }
     const newUser = this.userRepository.create(user);
     return this.userRepository.save(newUser);
   }
