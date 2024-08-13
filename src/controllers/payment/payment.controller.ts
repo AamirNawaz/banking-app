@@ -6,6 +6,7 @@ import {
   Param,
   Put,
   Delete,
+  Req,
 } from '@nestjs/common';
 import { PaymentService } from '../../services/payment/payment.service';
 import { CreatePaymentDto } from '../../dto/payment/create-payment.dto';
@@ -16,22 +17,29 @@ export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
   @Post()
-  create(@Body() createPaymentDto: CreatePaymentDto): Promise<Payment> {
-    return this.paymentService.create(createPaymentDto);
+  create(
+    @Req() req,
+    @Body() createPaymentDto: CreatePaymentDto,
+  ): Promise<Payment> {
+    const userId = req.user.sub;
+    return this.paymentService.create(userId, createPaymentDto);
   }
 
   @Get()
-  findAll(): Promise<Payment[]> {
-    return this.paymentService.findAll();
+  findAll(@Req() req): Promise<Payment[]> {
+    const userId = req.user.sub;
+    return this.paymentService.findAll(userId);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number): Promise<Payment> {
-    return this.paymentService.findOne(id);
+  findOne(@Param('id') id: number, @Req() req): Promise<Payment> {
+    const userId = req.user.sub;
+    return this.paymentService.findOne(id, userId);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number): Promise<void> {
-    return this.paymentService.remove(id);
+  remove(@Param('id') id: number, @Req() req): Promise<void> {
+    const userId = req.user.sub;
+    return this.paymentService.remove(id, userId);
   }
 }
