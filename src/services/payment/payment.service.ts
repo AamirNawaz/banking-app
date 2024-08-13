@@ -14,9 +14,15 @@ export class PaymentService {
     private readonly bookingRepository: Repository<Booking>,
   ) {}
 
-  async create(createPaymentDto: CreatePaymentDto): Promise<Payment> {
+  async create(
+    userId: number,
+    createPaymentDto: CreatePaymentDto,
+  ): Promise<Payment> {
     const booking = await this.bookingRepository.findOne({
-      where: { booking_id: createPaymentDto.booking },
+      where: {
+        booking_id: createPaymentDto.booking,
+        user: { user_id: userId },
+      },
     });
 
     if (!booking) {
@@ -27,6 +33,7 @@ export class PaymentService {
     const payment = new Payment();
     payment.booking = booking;
     payment.payment_method = createPaymentDto.payment_method;
+    // payment.user = creat
     payment.amount = createPaymentDto.amount;
     payment.status = createPaymentDto.status;
     payment.created_at = createPaymentDto.created_at;
@@ -35,13 +42,16 @@ export class PaymentService {
     return this.paymentRepository.save(payment);
   }
 
-  async findAll(): Promise<Payment[]> {
-    return this.paymentRepository.find({ relations: ['booking'] });
+  async findAll(userId: number): Promise<Payment[]> {
+    return this.paymentRepository.find({
+      where: { user: { user_id: userId } },
+      relations: ['booking'],
+    });
   }
 
-  async findOne(id: number): Promise<Payment> {
+  async findOne(id: number, userId: number): Promise<Payment> {
     const payment = await this.paymentRepository.findOne({
-      where: { payment_id: id },
+      where: { payment_id: id, user: { user_id: userId } },
       relations: ['booking'],
     });
 
@@ -52,8 +62,11 @@ export class PaymentService {
     return payment;
   }
 
-  async remove(id: number): Promise<void> {
-    const result = await this.paymentRepository.delete(id);
+  async remove(id: number, userId: number): Promise<void> {
+    const result = await this.paymentRepository.delete({
+      payment_id: id,
+      user: { user_id: userId },
+    });
     if (result.affected === 0) {
       throw new NotFoundException(`Payment with ID ${id} not found`);
     }

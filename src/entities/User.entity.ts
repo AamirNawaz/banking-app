@@ -9,6 +9,8 @@ import { Role } from './Role.entity';
 import { Booking } from './Booking.entity';
 import { AppNotification } from './AppNotification.entity';
 import { QRCode } from './QRCode.entity';
+import { Review } from './Review.entity';
+import { Payment } from './Payment.entity';
 
 @Entity()
 export class User {
@@ -41,6 +43,12 @@ export class User {
 
   @OneToMany(() => QRCode, (qrCode) => qrCode.user)
   qrCodes: QRCode[];
+
+  @OneToMany(() => Review, (review) => review.user)
+  reviews: Review[];
+
+  @OneToMany(() => Payment, (payment) => payment.user)
+  payments: Payment[];
 
   @Column({ nullable: true })
   address: string;

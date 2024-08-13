@@ -7,6 +7,7 @@ import {
   Put,
   Delete,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { ReviewService } from '../../services/review/review.service';
 import { CreateReviewDto } from '../../dto/review/create-review.dto';
@@ -22,21 +23,27 @@ export class ReviewController {
   @Post()
   @UseGuards(UserGuard)
   @Roles('customer')
-  create(@Body() createReviewDto: CreateReviewDto): Promise<Review> {
-    return this.reviewService.create(createReviewDto);
+  create(
+    @Body() createReviewDto: CreateReviewDto,
+    @Req() req,
+  ): Promise<Review> {
+    const userId = req.user.sub;
+    return this.reviewService.create(userId, createReviewDto);
   }
 
   @Get()
   @UseGuards(UserGuard)
   @Roles('customer')
-  findAll(): Promise<Review[]> {
-    return this.reviewService.findAll();
+  findAll(@Req() req): Promise<Review[]> {
+    const userId = req.user.sub;
+    return this.reviewService.findAll(userId);
   }
 
   @Get(':id')
   @UseGuards(UserGuard)
-  findOne(@Param('id') id: number): Promise<Review> {
-    return this.reviewService.findOne(id);
+  findOne(@Param('id') id: number, @Req() req): Promise<Review> {
+    const userId = req.user.sub;
+    return this.reviewService.findOne(id, userId);
   }
 
   @Put(':id')
@@ -45,14 +52,17 @@ export class ReviewController {
   update(
     @Param('id') id: number,
     @Body() updateReviewDto: UpdateReviewDto,
+    @Req() req,
   ): Promise<Review> {
-    return this.reviewService.update(id, updateReviewDto);
+    const userId = req.user.sub;
+    return this.reviewService.update(id, userId, updateReviewDto);
   }
 
   @Delete(':id')
   @Roles('customer')
   @UseGuards(UserGuard)
-  remove(@Param('id') id: number): Promise<void> {
-    return this.reviewService.remove(id);
+  remove(@Param('id') id: number, @Req() req): Promise<void> {
+    const userId = req.user.sub;
+    return this.reviewService.remove(id, userId);
   }
 }
