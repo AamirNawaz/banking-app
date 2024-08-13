@@ -5,6 +5,7 @@ import { Review } from '../../entities/review.entity';
 import { CreateReviewDto } from 'src/dto/review/create-review.dto';
 import { UpdateReviewDto } from 'src/dto/review/update-review.dto';
 import { Booking } from '../../entities/Booking.entity';
+import { User } from 'src/entities/User.entity';
 
 @Injectable()
 export class ReviewService {
@@ -13,9 +14,14 @@ export class ReviewService {
     private readonly reviewRepository: Repository<Review>,
     @InjectRepository(Booking)
     private readonly bookingRepository: Repository<Booking>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
-  async create(createReviewDto: CreateReviewDto): Promise<Review> {
+  async create(
+    userId: number,
+    createReviewDto: CreateReviewDto,
+  ): Promise<Review> {
     const booking = await this.bookingRepository.findOne({
       where: { booking_id: createReviewDto.booking },
     });
@@ -26,8 +32,17 @@ export class ReviewService {
       );
     }
 
+    const user = await this.userRepository.findOne({
+      where: { user_id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
+
     const review = new Review();
     review.booking = booking;
+    review.user = user;
     review.rating = createReviewDto.rating;
     review.review = createReviewDto.review;
     review.created_at = createReviewDto.created_at;
@@ -36,13 +51,16 @@ export class ReviewService {
     return this.reviewRepository.save(review);
   }
 
-  async findAll(): Promise<Review[]> {
-    return this.reviewRepository.find({ relations: ['booking'] });
+  async findAll(userId: number): Promise<Review[]> {
+    return this.reviewRepository.find({
+      where: { user: { user_id: userId } },
+      relations: ['booking'],
+    });
   }
 
-  async findOne(id: number): Promise<Review> {
+  async findOne(id: number, userId: number): Promise<Review> {
     const review = await this.reviewRepository.findOne({
-      where: { review_id: id },
+      where: { review_id: id, user: { user_id: userId } },
       relations: ['booking'],
     });
 
@@ -53,9 +71,13 @@ export class ReviewService {
     return review;
   }
 
-  async update(id: number, updateReviewDto: UpdateReviewDto): Promise<Review> {
+  async update(
+    id: number,
+    userId: number,
+    updateReviewDto: UpdateReviewDto,
+  ): Promise<Review> {
     const review = await this.reviewRepository.findOne({
-      where: { review_id: id },
+      where: { review_id: id, user: { user_id: userId } },
       relations: ['booking'],
     });
 
@@ -65,7 +87,10 @@ export class ReviewService {
 
     if (updateReviewDto.booking) {
       const booking = await this.bookingRepository.findOne({
-        where: { booking_id: updateReviewDto.booking },
+        where: {
+          booking_id: updateReviewDto.booking,
+          user: { user_id: userId },
+        },
       });
 
       if (!booking) {
@@ -92,8 +117,11 @@ export class ReviewService {
     return this.reviewRepository.save(review);
   }
 
-  async remove(id: number): Promise<void> {
-    const result = await this.reviewRepository.delete(id);
+  async remove(id: number, userId: number): Promise<void> {
+    const result = await this.reviewRepository.delete({
+      review_id: id,
+      user: { user_id: userId },
+    });
     if (result.affected === 0) {
       throw new NotFoundException(`Review with ID ${id} not found`);
     }

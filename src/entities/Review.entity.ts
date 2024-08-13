@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Booking } from './Booking.entity';
+import { User } from './User.entity';
 
 @Entity()
 export class Review {
@@ -9,6 +10,8 @@ export class Review {
   @ManyToOne(() => Booking, (booking) => booking.reviews)
   booking: Booking;
 
+  @ManyToOne(() => User, (user) => user.reviews)
+  user: User;
   @Column()
   rating: number;
 
