@@ -7,6 +7,8 @@ import {
   Put,
   Delete,
   UseGuards,
+  Req,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { LoginUserDto } from 'src/dto/user/login-user.dto';
 import { User } from 'src/entities/User.entity';
@@ -29,7 +31,7 @@ export class UserController {
   }
 
   @Get()
-  @Roles('admin', 'merchant')
+  @Roles('admin')
   @UseGuards(UserGuard)
   async findAll(): Promise<User[]> {
     return this.userService.findAll();
@@ -37,24 +39,27 @@ export class UserController {
 
   @Get(':id')
   @UseGuards(UserGuard)
-  async findOne(@Param('id') id: number): Promise<User> {
-    return this.userService.findOne(id);
+  async findOne(@Param('id') id: number, @Req() req): Promise<User> {
+    const userIdFromToken = req.user.sub;
+    if (id !== userIdFromToken) {
+      throw new UnauthorizedException(
+        'You are not authorized to access this user',
+      );
+    }
+    return this.userService.findOne(userIdFromToken);
   }
 
-  @Put(':id')
+  @Put()
   @UseGuards(UserGuard)
-  @Roles('admin', 'merchant', 'customer')
-  async update(
-    @Param('id') id: number,
-    @Body() user: Partial<User>,
-  ): Promise<User> {
-    return this.userService.update(id, user);
+  async update(@Body() user: Partial<User>, @Req() req): Promise<User> {
+    const userId = req.user.sub;
+    return this.userService.update(userId, user);
   }
 
   @Delete(':id')
   @UseGuards(UserGuard)
-  @Roles('admin', 'merchant', 'customer')
-  async remove(@Param('id') id: number): Promise<void> {
-    return this.userService.remove(id);
+  async remove(@Param('id') id: number, @Req() req): Promise<void> {
+    const userId = req.user.sub;
+    return this.userService.remove(userId);
   }
 }

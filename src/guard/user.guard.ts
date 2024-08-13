@@ -12,15 +12,16 @@ import { Request } from 'express';
 @Injectable()
 export class UserGuard implements CanActivate {
   constructor(
-    private jwtService: JwtService,
-    private reflector: Reflector,
+    private readonly jwtService: JwtService,
+    private readonly reflector: Reflector,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest();
+    const request = this.getRequest(context);
     const token = this.extractTokenFromHeader(request);
+
     if (!token) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Authorization header missing');
     }
 
     try {
@@ -37,8 +38,8 @@ export class UserGuard implements CanActivate {
       }
 
       request['user'] = payload;
-    } catch {
-      throw new UnauthorizedException();
+    } catch (error) {
+      throw new UnauthorizedException('Invalid token');
     }
 
     return true;
@@ -47,5 +48,9 @@ export class UserGuard implements CanActivate {
   private extractTokenFromHeader(request: Request): string | undefined {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
+  }
+
+  private getRequest(context: ExecutionContext): Request {
+    return context.switchToHttp().getRequest<Request>();
   }
 }

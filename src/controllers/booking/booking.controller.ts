@@ -6,6 +6,7 @@ import {
   Param,
   Put,
   Delete,
+  Req,
 } from '@nestjs/common';
 import { BookingService } from 'src/services/booking/booking.service';
 import { CreateBookingDto } from 'src/dto/booking/create-booking.dto';
@@ -17,30 +18,39 @@ export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
 
   @Post()
-  create(@Body() createBookingDto: CreateBookingDto): Promise<Booking> {
-    return this.bookingService.create(createBookingDto);
+  create(
+    @Body() createBookingDto: CreateBookingDto,
+    @Req() req,
+  ): Promise<Booking> {
+    const userId = req.user.sub;
+    return this.bookingService.create(userId, createBookingDto);
   }
 
   @Get()
-  findAll(): Promise<Booking[]> {
-    return this.bookingService.findAll();
+  findAll(@Req() req): Promise<Booking[]> {
+    const userId = req.user.sub;
+    return this.bookingService.findAll(userId);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number): Promise<Booking> {
-    return this.bookingService.findOne(id);
+  findOne(@Param('id') id: number, @Req() req): Promise<Booking> {
+    const userId = req.user.sub;
+    return this.bookingService.findOne(id, userId);
   }
 
   @Put(':id')
   update(
     @Param('id') id: number,
     @Body() updateBookingDto: UpdateBookingDto,
+    @Req() req,
   ): Promise<Booking> {
-    return this.bookingService.update(id, updateBookingDto);
+    const userId = req.user.sub;
+    return this.bookingService.update(id, userId, updateBookingDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number): Promise<void> {
-    return this.bookingService.remove(id);
+  remove(@Param('id') id: number, @Req() req): Promise<void> {
+    const userId = req.user.sub;
+    return this.bookingService.remove(id, userId);
   }
 }
