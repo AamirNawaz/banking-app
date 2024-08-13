@@ -15,9 +15,12 @@ export class BookingService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async create(createBookingDto: CreateBookingDto): Promise<Booking> {
+  async create(
+    userId: number,
+    createBookingDto: CreateBookingDto,
+  ): Promise<Booking> {
     const user = await this.userRepository.findOne({
-      where: { user_id: createBookingDto.user },
+      where: { user_id: userId },
     });
 
     if (!user) {
@@ -34,25 +37,27 @@ export class BookingService {
     return this.bookingRepository.save(booking);
   }
 
-  async findAll(): Promise<Booking[]> {
+  async findAll(userId: number): Promise<Booking[]> {
     return this.bookingRepository.find({
+      where: { user: { user_id: userId } },
       relations: ['user', 'reviews', 'payments'],
     });
   }
 
-  async findOne(id: number): Promise<Booking> {
+  async findOne(id: number, userId: number): Promise<Booking> {
     return this.bookingRepository.findOne({
-      where: { booking_id: id },
+      where: { booking_id: id, user: { user_id: userId } },
       relations: ['user', 'reviews', 'payments'],
     });
   }
 
   async update(
     id: number,
+    userId: number,
     updateBookingDto: UpdateBookingDto,
   ): Promise<Booking> {
     const bookingToUpdate = await this.bookingRepository.findOne({
-      where: { booking_id: id },
+      where: { booking_id: id, user: { user_id: userId } },
     });
 
     if (!bookingToUpdate) {
@@ -61,7 +66,7 @@ export class BookingService {
 
     if (updateBookingDto.user) {
       const user = await this.userRepository.findOne({
-        where: { user_id: updateBookingDto.user },
+        where: { user_id: userId },
       });
       if (!user) {
         throw new NotFoundException('User not found');
@@ -88,7 +93,10 @@ export class BookingService {
     return this.bookingRepository.save(bookingToUpdate);
   }
 
-  async remove(id: number): Promise<void> {
-    await this.bookingRepository.delete(id);
+  async remove(id: number, userId: number): Promise<void> {
+    await this.bookingRepository.delete({
+      booking_id: id,
+      user: { user_id: userId },
+    });
   }
 }
