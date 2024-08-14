@@ -16,10 +16,11 @@ export class AppNotificationService {
   ) {}
 
   async create(
+    userId: number,
     createNotificationDto: CreateNotificationDto,
   ): Promise<AppNotification> {
     const user = await this.userRepository.findOne({
-      where: { user_id: createNotificationDto.user },
+      where: { user_id: userId },
     });
 
     if (!user) {
@@ -34,13 +35,16 @@ export class AppNotificationService {
     return this.notificationRepository.save(notification);
   }
 
-  async findAll(): Promise<AppNotification[]> {
-    return this.notificationRepository.find({ relations: ['user'] });
+  async findAll(userId: number): Promise<AppNotification[]> {
+    return this.notificationRepository.find({
+      where: { user: { user_id: userId } },
+      relations: ['user'],
+    });
   }
 
-  async findOne(id: number): Promise<AppNotification> {
+  async findOne(id: number, userId: number): Promise<AppNotification> {
     const notification = await this.notificationRepository.findOne({
-      where: { notification_id: id },
+      where: { notification_id: id, user: { user_id: userId } },
       relations: ['user'],
     });
 
@@ -53,10 +57,11 @@ export class AppNotificationService {
 
   async update(
     id: number,
+    userId: number,
     updateNotificationDto: UpdateNotificationDto,
   ): Promise<AppNotification> {
     const notificationToUpdate = await this.notificationRepository.findOne({
-      where: { notification_id: id },
+      where: { notification_id: id, user: { user_id: userId } },
     });
 
     if (!notificationToUpdate) {
@@ -88,8 +93,11 @@ export class AppNotificationService {
     return this.notificationRepository.save(notificationToUpdate);
   }
 
-  async remove(id: number): Promise<void> {
-    const result = await this.notificationRepository.delete(id);
+  async remove(id: number, userId: number): Promise<void> {
+    const result = await this.notificationRepository.delete({
+      notification_id: id,
+      user: { user_id: userId },
+    });
     if (result.affected === 0) {
       throw new NotFoundException('Notification not found');
     }
