@@ -6,43 +6,58 @@ import {
   Param,
   Put,
   Delete,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { AppNotificationService } from '../../services/notification/appNotification.service';
 import { CreateNotificationDto } from '../../dto/notification/create-notification.dto';
 import { UpdateNotificationDto } from '../../dto/notification/update-notification.dto';
 import { AppNotification } from '../../entities/AppNotification.entity';
+import { UserGuard } from 'src/guard/user.guard';
 
 @Controller('notifications')
 export class AppNotificationController {
   constructor(private readonly notificationService: AppNotificationService) {}
 
   @Post()
+  @UseGuards(UserGuard)
   create(
+    @Req() req,
     @Body() createNotificationDto: CreateNotificationDto,
   ): Promise<AppNotification> {
-    return this.notificationService.create(createNotificationDto);
+    const userId = req.user.sub;
+    return this.notificationService.create(userId, createNotificationDto);
   }
 
   @Get()
-  findAll(): Promise<AppNotification[]> {
-    return this.notificationService.findAll();
+  @UseGuards(UserGuard)
+  findAll(@Req() req): Promise<AppNotification[]> {
+    const userId = req.user.sub;
+    return this.notificationService.findAll(userId);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number): Promise<AppNotification> {
-    return this.notificationService.findOne(id);
+  @UseGuards(UserGuard)
+  findOne(@Param('id') id: number, @Req() req): Promise<AppNotification> {
+    const userId = req.user.sub;
+    return this.notificationService.findOne(id, userId);
   }
 
   @Put(':id')
+  @UseGuards(UserGuard)
   update(
     @Param('id') id: number,
+    @Req() req,
     @Body() updateNotificationDto: UpdateNotificationDto,
   ): Promise<AppNotification> {
-    return this.notificationService.update(id, updateNotificationDto);
+    const userId = req.user.sub;
+    return this.notificationService.update(id, userId, updateNotificationDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number): Promise<void> {
-    return this.notificationService.remove(id);
+  @UseGuards(UserGuard)
+  remove(@Param('id') id: number, @Req() req): Promise<void> {
+    const userId = req.user.sub;
+    return this.notificationService.remove(id, userId);
   }
 }
