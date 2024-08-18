@@ -5,6 +5,7 @@ import { QRCode } from '../../entities/qrcode.entity';
 import { CreateQRCodeDto } from '../../dto/QRcode/create-qrcode.dto';
 import { UpdateQRCodeDto } from '../../dto/QRcode/update-qrcode.dto';
 import { User } from '../../entities/user.entity';
+import * as QRCodeLib from 'qrcode';
 
 @Injectable()
 export class QRCodeService {
@@ -15,21 +16,26 @@ export class QRCodeService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async create(createQRCodeDto: CreateQRCodeDto): Promise<QRCode> {
+  async create(
+    userId: number,
+    createQRCodeDto: CreateQRCodeDto,
+  ): Promise<QRCode> {
     const user = await this.userRepository.findOne({
-      where: { user_id: createQRCodeDto.user },
+      where: { user_id: userId },
     });
     if (!user) {
-      throw new NotFoundException(
-        `User with ID ${createQRCodeDto.user} not found`,
-      );
+      throw new NotFoundException(`User with ID ${userId} not found`);
     }
 
     const qrCode = new QRCode();
     qrCode.user = user;
     qrCode.qr_code_data = createQRCodeDto.qr_code_data;
-    qrCode.created_at = createQRCodeDto.created_at;
-    qrCode.updated_at = createQRCodeDto.updated_at;
+
+    //QrCode generation logic
+    qrCode.imageUrl = await QRCodeLib.toDataURL(createQRCodeDto.qr_code_data);
+
+    qrCode.created_at = new Date();
+    qrCode.updated_at = new Date();
 
     return this.qrCodeRepository.save(qrCode);
   }

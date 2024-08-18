@@ -1,4 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { User } from './User.entity';
 import { Payment } from './Payment.entity';
 
@@ -10,15 +17,19 @@ export class QRCode {
   @ManyToOne(() => User, (user) => user.qrCodes)
   user: User;
 
-  @ManyToOne(() => Payment, (payment) => payment.qrCodes, { nullable: true })
+  @ManyToOne(() => Payment, (payment) => payment.qrCodes, {
+    nullable: true,
+    cascade: true,
+    onDelete: 'SET NULL',
+  })
   payment?: Payment;
 
   @Column()
-  qr_code_data: string;
+  imageUrl: string;
 
-  @Column()
+  @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
 
-  @Column()
+  @UpdateDateColumn({ type: 'timestamp' })
   updated_at: Date;
 }

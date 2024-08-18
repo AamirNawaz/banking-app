@@ -6,19 +6,27 @@ import {
   Param,
   Put,
   Delete,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { QRCodeService } from '../../services/qrcode/qrcode.service';
 import { CreateQRCodeDto } from '../../dto/qrcode/create-qrcode.dto';
 import { UpdateQRCodeDto } from '../../dto/qrcode/update-qrcode.dto';
 import { QRCode } from '../../entities/QRCode.entity';
+import { UserGuard } from 'src/guard/user.guard';
 
 @Controller('qrcodes')
 export class QRCodeController {
   constructor(private readonly qrCodeService: QRCodeService) {}
 
   @Post()
-  create(@Body() createQRCodeDto: CreateQRCodeDto): Promise<QRCode> {
-    return this.qrCodeService.create(createQRCodeDto);
+  @UseGuards(UserGuard)
+  create(
+    @Req() req,
+    @Body() createQRCodeDto: CreateQRCodeDto,
+  ): Promise<QRCode> {
+    const userId = req.user.sub;
+    return this.qrCodeService.create(userId, createQRCodeDto);
   }
 
   @Get()
