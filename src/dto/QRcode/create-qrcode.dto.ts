@@ -8,12 +8,11 @@ import {
 
 export class CreateQRCodeDto {
   @IsNotEmpty()
-  @IsNumber()
-  readonly user: number;
-
-  @IsNotEmpty()
   @IsString()
   readonly qr_code_data: string;
+
+  @IsOptional()
+  imageUrl: string;
 
   @IsOptional()
   @IsDate()
